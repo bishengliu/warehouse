@@ -15,6 +15,7 @@ namespace Warehouse.Entities.Builders
             builder.Property(b => b.Name)
                 .IsRequired()
                 .HasMaxLength(255);
+
             builder.Property(b => b.UpdateAt)
                 .HasDefaultValue(DateTime.UtcNow);
         }

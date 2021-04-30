@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Warehouse.Entities;
 
 namespace Warehouse.Entities.Migrations
 {
     [DbContext(typeof(WarehouseDbContext))]
-    partial class WarehouseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210430200028_change-product-name")]
+    partial class changeproductname
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +44,7 @@ namespace Warehouse.Entities.Migrations
                     b.Property<DateTime>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 4, 30, 21, 29, 46, 654, DateTimeKind.Utc).AddTicks(3885));
+                        .HasDefaultValue(new DateTime(2021, 4, 30, 20, 0, 27, 811, DateTimeKind.Utc).AddTicks(551));
 
                     b.Property<string>("UpdateBy")
                         .HasColumnType("nvarchar(max)");
@@ -70,7 +72,7 @@ namespace Warehouse.Entities.Migrations
                     b.Property<DateTime>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 4, 30, 21, 29, 46, 655, DateTimeKind.Utc).AddTicks(4413));
+                        .HasDefaultValue(new DateTime(2021, 4, 30, 20, 0, 27, 812, DateTimeKind.Utc).AddTicks(4518));
 
                     b.Property<string>("UpdateBy")
                         .HasColumnType("nvarchar(max)");
@@ -80,7 +82,7 @@ namespace Warehouse.Entities.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("Warehouse.Entities.Models.ProductDefinition", b =>
+            modelBuilder.Entity("Warehouse.Entities.Models.ProductComposition", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -88,25 +90,19 @@ namespace Warehouse.Entities.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("ArticleAmount")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
+                        .HasColumnType("int");
 
                     b.Property<int>("ArticleId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
-                        .HasDefaultValue(0m);
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdateAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 4, 30, 21, 29, 46, 662, DateTimeKind.Utc).AddTicks(9150));
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UpdateBy")
                         .HasColumnType("nvarchar(max)");
@@ -115,24 +111,23 @@ namespace Warehouse.Entities.Migrations
 
                     b.HasIndex("ArticleId");
 
-                    b.HasIndex("ProductId", "ArticleId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
 
-                    b.ToTable("ProductDefinition");
+                    b.ToTable("ProductComposition");
                 });
 
-            modelBuilder.Entity("Warehouse.Entities.Models.ProductDefinition", b =>
+            modelBuilder.Entity("Warehouse.Entities.Models.ProductComposition", b =>
                 {
                     b.HasOne("Warehouse.Entities.Models.Article", "Article")
-                        .WithMany("ProductDefinitions")
+                        .WithMany("ProductCompositions")
                         .HasForeignKey("ArticleId")
-                        .HasConstraintName("FK_Article_ProductCompositions")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Warehouse.Entities.Models.Product", "Product")
-                        .WithMany("ProductDefinitions")
+                        .WithMany("ProductCompositions")
                         .HasForeignKey("ProductId")
-                        .HasConstraintName("FK_Product_ProductCompositions")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

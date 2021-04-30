@@ -17,6 +17,7 @@ namespace Warehouse.Entities.Builders
             builder.Property(b => b.Stock)
                 .IsRequired()
                 .HasDefaultValue(0);
+
             builder.Property(b => b.UpdateAt)
                 .HasDefaultValue(DateTime.UtcNow);
 

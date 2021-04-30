@@ -8,7 +8,7 @@ namespace Warehouse.Entities.Models
     {
         public Article()
         {
-            ProductCompositions = new HashSet<ProductComposition>();
+            ProductDefinitions = new HashSet<ProductDefinition>();
             UpdateAt = DateTime.UtcNow;
             UpdateBy = "DemoUser";
         }
@@ -19,6 +19,6 @@ namespace Warehouse.Entities.Models
         public DateTime UpdateAt { get; set; }
         public string   UpdateBy { get; set; }
 
-        public virtual ICollection<ProductComposition> ProductCompositions { get; set; }
+        public virtual ICollection<ProductDefinition> ProductDefinitions { get; set; }
     }
 }

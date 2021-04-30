@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Warehouse.Entities.Models
 {
-    public class ProductComposition
+    public class ProductDefinition
     {
-        public ProductComposition()
+        public ProductDefinition()
         {
             UpdateAt = DateTime.UtcNow;
             UpdateBy = "DemoUser";
@@ -14,6 +14,7 @@ namespace Warehouse.Entities.Models
 
         public int Id { get; set; }
         public int ProductId { get; set; }
+        public decimal Price { get; set; }
         public int ArticleId { get; set; }
         public int ArticleAmount { get; set; }
 

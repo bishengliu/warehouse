@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Warehouse.Entities;
 
 namespace Warehouse.Entities.Migrations
 {
     [DbContext(typeof(WarehouseDbContext))]
-    partial class WarehouseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210430201230_change-table-name-product-definition")]
+    partial class changetablenameproductdefinition
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +44,7 @@ namespace Warehouse.Entities.Migrations
                     b.Property<DateTime>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 4, 30, 21, 29, 46, 654, DateTimeKind.Utc).AddTicks(3885));
+                        .HasDefaultValue(new DateTime(2021, 4, 30, 20, 12, 30, 368, DateTimeKind.Utc).AddTicks(1641));
 
                     b.Property<string>("UpdateBy")
                         .HasColumnType("nvarchar(max)");
@@ -70,7 +72,7 @@ namespace Warehouse.Entities.Migrations
                     b.Property<DateTime>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 4, 30, 21, 29, 46, 655, DateTimeKind.Utc).AddTicks(4413));
+                        .HasDefaultValue(new DateTime(2021, 4, 30, 20, 12, 30, 369, DateTimeKind.Utc).AddTicks(1491));
 
                     b.Property<string>("UpdateBy")
                         .HasColumnType("nvarchar(max)");
@@ -106,7 +108,7 @@ namespace Warehouse.Entities.Migrations
                     b.Property<DateTime>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 4, 30, 21, 29, 46, 662, DateTimeKind.Utc).AddTicks(9150));
+                        .HasDefaultValue(new DateTime(2021, 4, 30, 20, 12, 30, 377, DateTimeKind.Utc).AddTicks(5885));
 
                     b.Property<string>("UpdateBy")
                         .HasColumnType("nvarchar(max)");
