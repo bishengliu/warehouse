@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Warehouse.Entities\Warehouse.Entities.csproj" />
+    <ProjectReference Include="..\Warehouse.Services\Warehouse.Services.csproj" />
   </ItemGroup>
 
 
