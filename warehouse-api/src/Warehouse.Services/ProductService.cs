@@ -8,6 +8,7 @@ using Warehouse.Services.DTO;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using Warehouse.Services.Exceptions;
 
 namespace Warehouse.Services
 {
@@ -30,11 +31,13 @@ namespace Warehouse.Services
         {
             // prevent the same product being added twice
             // more product properties can be used 
+            var productNameGroups = products.GroupBy(p => p.Name);
+
             var productAlreadyDefined = await _repoContext
                 .Product.Select(p => p.Name)
                 .Intersect(products.Select(p => p.Name)).AnyAsync();
 
-            if(!productAlreadyDefined)
+            if (productNameGroups.Count() != products.Count() || !productAlreadyDefined)
             {
                 foreach(var product in products)
                 {
@@ -48,7 +51,8 @@ namespace Warehouse.Services
             } 
             else
             {
-                _logger.LogError("Update products failed: at least one produce already exists!");
+                _logger.LogError("add products failed: at least one produte already exists!");
+                throw new ProductNameNotUniqueException("Product Names must be unique!");
             }
         }
 
@@ -66,14 +70,24 @@ namespace Warehouse.Services
             var prod = await GetProductByName(product.Name);
             if(prod == null)
             {
-                Product prd = CreateProduct(product);
-                List<ProductDefinition> definitions = CreateProductDefinitions(product, prd);  
-                await _repoContext.Product.AddAsync(prd);
-                await _repoContext.ProductDefinition.AddRangeAsync(definitions);
-                await _repoContext.SaveChangesAsync();
-                return MapProduct(prd);
+                try
+                {
+                    Product prd = CreateProduct(product);
+                    List<ProductDefinition> definitions = CreateProductDefinitions(product, prd);
+                    await _repoContext.Product.AddAsync(prd);
+                    await _repoContext.ProductDefinition.AddRangeAsync(definitions);
+                    await _repoContext.SaveChangesAsync();
+                    return MapProduct(prd);
+                }
+                catch(Exception)
+                {
+                    _logger.LogError("add product failed: an unkown error encountered!");
+                    throw;
+                }
+                
             }
-            return null;
+            _logger.LogError($"add product failed: a product with the same name {product.Name} already exists!");
+            throw new ProductNameNotUniqueException($"Product Name must be unique: a product with the same name {product.Name} already exists!");
         }
 
         public async Task<ProductModel> UpdateProduct(ProductModel product)
@@ -81,15 +95,25 @@ namespace Warehouse.Services
             var prod = await _repoContext.Product.FindAsync(product.Id);
             if(prod != null)
             {
-                prod.Name = product.Name;
-                prod.Description = product.Description;
+                try
+                {
+                    prod.Name = product.Name;
+                    prod.Description = product.Description;
 
-                _repoContext.ProductDefinition.RemoveRange(prod.ProductDefinitions);                
-                prod.ProductDefinitions = CreateProductDefinitions(product, prod);
-                await _repoContext.SaveChangesAsync();
-                return MapProduct(prod);
+                    _repoContext.ProductDefinition.RemoveRange(prod.ProductDefinitions);
+                    prod.ProductDefinitions = CreateProductDefinitions(product, prod);
+                    await _repoContext.SaveChangesAsync();
+                    return MapProduct(prod);
+                } 
+                catch(Exception)
+                {
+                    _logger.LogError($"update product {product.Id} failed: an unkown error encountered!");
+                    throw;
+                }
+                
             }
-            return product;
+            _logger.LogError($"update product {product.Id} failed: product not found!");
+            throw new ProductNotFoundException($"Product {product.Id} doesn't exist!");
         }
 
         private List<ProductDefinition> CreateProductDefinitions(ProductModel product, Product prd)
@@ -158,7 +182,8 @@ namespace Warehouse.Services
                 await _repoContext.SaveChangesAsync();
                 return productModel;
             }
-            return null;
+            _logger.LogError("delete product failed: product not found!");
+            throw new ProductNotFoundException("Product doesn't exist!");
         }
         
         public IEnumerable<ProductModel> GetProducts()
@@ -183,28 +208,20 @@ namespace Warehouse.Services
 
         public async Task<ProductStock> GetProductStokById(int id) => await _repoContext.ProductStock.FindAsync(id);
 
-        public async Task<bool> SellProduct(int Id)
+        public async Task SellProduct(int Id)
         {
             var productModel = await GetProductById(Id);
             if(productModel != null)
             {
-
                 if(_inventoryService.HasEnoughStock(productModel.Articles))
                 {
-
                     _inventoryService.UpdateInventory(productModel.Articles);
-                    return true;
                 }
-                else
-                {
-                    _logger.LogError("failed to sell the product: insufficient articles!");
-                }
-            } 
-            else
-            {
-                _logger.LogError("failed to sell the product: product doesn't exist!");
+                _logger.LogError($"failed to sell product {Id}: insufficient articles!");
+                throw new InsufficientArticlesException($"failed to sell product {Id}: insufficient articles!");
             }
-            return false;
+            _logger.LogError($"sell product failed: product {Id} not found!");
+            throw new ProductNotFoundException($"sell product failed: product {Id} not found!");            
         }
     }
 

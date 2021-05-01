@@ -71,7 +71,8 @@ namespace Warehouse.API.Controllers
             var productStock = await _productService.GetProductStokById(id);
             if(productStock == null || productStock.Stock == 0) return BadRequest();
 
-            return Ok(await _productService.SellProduct(id));
+            await _productService.SellProduct(id);
+            return Ok();
         }
 
         // POST api/<ProductController>

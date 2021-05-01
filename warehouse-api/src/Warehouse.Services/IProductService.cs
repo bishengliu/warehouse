@@ -26,7 +26,7 @@ namespace Warehouse.Services
         /// sell a product and update inventory
         /// </summary>
         /// <param name="Id"></param>
-        Task<bool> SellProduct(int Id);
+        Task SellProduct(int Id);
 
         /// <summary>
         /// add new products
