@@ -3,8 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Warehouse.API.Helpers;
 using Warehouse.Entities.Models;
 using Warehouse.Services;
 using Warehouse.Services.DTO;
@@ -19,11 +23,20 @@ namespace Warehouse.API.Controllers
     {
         private readonly IProductService _productService;
         private readonly ILogger<ProductsController> _logger;
+        private readonly IUploadService _uploadService;
+
+        private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
+        {
+            IgnoreNullValues = true,
+            PropertyNameCaseInsensitive = true
+        };
         public ProductsController(IProductService productService
-            , ILogger<ProductsController> logger)
+            , ILogger<ProductsController> logger
+            , IUploadService uploadService)
         {
             _productService = productService;
             _logger = logger;
+            _uploadService = uploadService;
         }
         // GET: api/<ProductController>
         // get all the products (be aware of the performance)
@@ -80,6 +93,16 @@ namespace Warehouse.API.Controllers
         public async Task<ProductModel> AddProuct([FromBody] ProductModel productModel)
         {
             return await _productService.AddProduct(productModel);
+        }
+
+        [HttpPost("upload")]
+        public async Task<IEnumerable<ProductModel>> UploadProducts(IFormFile file)
+        {
+            var data = await _uploadService.ReadFileContent(file);
+            var productsUpload = JsonSerializer.Deserialize<ProductUploadModel>(data, JsonSerializerOptions);
+            var products = _uploadService.MapProducts(productsUpload);
+            await _productService.AddProducts(products);
+            return products;
         }
 
         // PUT api/<ProductController>/5

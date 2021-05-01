@@ -11,6 +11,7 @@ namespace Warehouse.API.Extensions
     {
         public static void RegisterWarehouseService(this IServiceCollection services)
         {
+            services.AddTransient<IUploadService, UploadService>();
             services.AddTransient<IInventoryService, InventoryService>();
             services.AddTransient<IProductService, ProductService>();
         }
