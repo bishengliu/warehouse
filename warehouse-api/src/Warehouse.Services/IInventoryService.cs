@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Warehouse.Entities.Models;
+using Warehouse.Services.DTO;
 
 namespace Warehouse.Services
 {
@@ -12,6 +13,19 @@ namespace Warehouse.Services
         /// </summary>
         /// <param name="articles"></param>
         void UpdateInventory(IEnumerable<Article> articles);
+
+        /// <summary>
+        /// check whether there are sufficient articles before selling
+        /// </summary>
+        /// <param name="articles"></param>
+        /// <returns></returns>
+        bool HasEnoughStock(IEnumerable<ProductArticleModel> articles);
+
+        /// <summary>
+        /// update inventory upon selling a product
+        /// </summary>
+        /// <param name="articles"></param>
+        void UpdateInventory(IEnumerable<ProductArticleModel> articles);
 
         /// <summary>
         /// check whether all the article are in the inventory

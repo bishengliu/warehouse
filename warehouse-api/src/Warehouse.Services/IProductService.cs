@@ -37,7 +37,7 @@ namespace Warehouse.Services
         /// get stock info of a product
         /// </summary>
         /// <returns></returns>
-        ProductStock GetProductStok();
+        ProductStock GetProductStokById(int id);
 
         /// <summary>
         /// get stock info of all products

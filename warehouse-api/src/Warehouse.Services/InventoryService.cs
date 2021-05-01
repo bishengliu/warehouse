@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Warehouse.Entities;
 using Warehouse.Entities.Models;
+using Warehouse.Services.DTO;
 
 namespace Warehouse.Services
 {
@@ -17,9 +18,41 @@ namespace Warehouse.Services
             _logger = logger;
         }
 
+        public bool HasEnoughStock(IEnumerable<ProductArticleModel> articleModels)
+        {
+            var articles = _repoContext.Article.Where(a => articleModels.Select(m => m.Id).Contains(a.Id));
+            foreach (var model in articleModels)
+            {
+                var article = articles.FirstOrDefault(a => a.Id == model.Id);
+                if(article.Stock < model.Amount)
+                {
+                    return false;             
+                }
+            }
+            return true;
+        }
+
+        public void UpdateInventory(IEnumerable<ProductArticleModel> articleModels)
+        {
+            var articles = _repoContext.Article.Where(a => articleModels.Select(m => m.Id).Contains(a.Id));
+            foreach (var model in articleModels)
+            {
+                var article = articles.FirstOrDefault(a => a.Id == model.Id);
+                article.Stock -= model.Amount;
+            }
+            _repoContext.SaveChanges();
+        }
+
+
         public void UpdateInventory(IEnumerable<Article> articles)
         {
-            if(AllArticlesInInventory(articles))
+            if(articles.Any(a => a.Stock < 0))
+            {
+                _logger.LogError("Update inventory failed: stock must not be a negative value!");
+                return;
+            }
+
+            if (AllArticlesInInventory(articles))
             {
                 foreach(var art in articles)
                 {
@@ -43,7 +76,10 @@ namespace Warehouse.Services
 
         public bool AllArticlesInInventory(IEnumerable<Article> articles)
         {
-            int intersections = _repoContext.Article.Select(a => a.Id).Intersect(articles.Select(a => a.Id)).Count();
+            int intersections = _repoContext.Article
+                .Select(a => a.Id)
+                .Intersect(articles.Select(a => a.Id)).Count();
+
             return articles.Where(a => a.Id < 0).Any() && intersections != articles.Count();
         }
 
@@ -52,15 +88,20 @@ namespace Warehouse.Services
             // check whether same name already in the inventory, since we don't want to add the same article twice
             // in real application more properties can be combined, like color, materials, model code etc
 
-            if(art.Name != string.Empty && !_repoContext.Article.Any(a=> a.Name == art.Name))
+            if(art.Name != string.Empty && art.Stock >= 0 && !_repoContext.Article.Any(a=> a.Name == art.Name))
             {
                 _repoContext.Add(art);
                 _repoContext.SaveChanges();
 
                 _logger.LogInformation("new article 1 added by DemoUser");
             }
+            else
+            {
+                _logger.LogError("Update inventory failed: invalid article!");
+            }
         }
 
         public Article GetArticleById(int id) => _repoContext.Article.Find(id);
+
     }
 }

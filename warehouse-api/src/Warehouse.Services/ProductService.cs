@@ -39,6 +39,7 @@ namespace Warehouse.Services
                     prd.Name = product.Name;
 
                     List<ProductDefinition> definitions = new List<ProductDefinition>();
+                    //load product articles
                     foreach(var art in product.Articles)
                     {
                         ProductDefinition def = new ProductDefinition();
@@ -66,30 +67,81 @@ namespace Warehouse.Services
 
         public ProductModel GetProductById(int Id)
         {
-            throw new NotImplementedException();
+            ProductModel prodModel = new ProductModel();
+            var product = _repoContext.Product.Find(Id);
+            if(product != null)
+            {
+                // get product details
+                prodModel.Id = product.Id;
+                prodModel.Name = product.Name;
+                prodModel.Description = product.Description;
+
+                // get product definition/articles
+                List<ProductArticleModel> articles = new List<ProductArticleModel>();
+                foreach(var def in product.ProductDefinitions)
+                {
+                    ProductArticleModel article = new ProductArticleModel();
+                    article.Id = def.ArticleId;
+                    article.Name = def.Article.Name;
+                    article.Amount = def.ArticleAmount;
+                    article.Price = def.Price;
+                    articles.Add(article);
+                }
+
+                prodModel.Articles = articles;
+
+            }
+            return prodModel;
         }
 
         public IEnumerable<ProductModel> GetProducts()
         {
-            throw new NotImplementedException();
+            List<ProductModel> productModels = new List<ProductModel>();
+
+            var products = _repoContext.Product;
+
+            foreach(var prod in products)
+            {
+                var productModel = GetProductById(prod.Id);
+                if(productModel != null)
+                {
+                    productModels.Add(productModel);
+                }
+            }
+
+            return productModels;
         }
 
 
 
-        public IEnumerable<ProductStock> GetAllProductStocks()
-        {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<ProductStock> GetAllProductStocks() => _repoContext.ProductStock;
 
 
-        public ProductStock GetProductStok()
-        {
-            throw new NotImplementedException();
-        }
+        public ProductStock GetProductStokById(int id) => _repoContext.ProductStock.FirstOrDefault(s => s.Id == id);
 
         public void SellProduct(int Id)
         {
-            throw new NotImplementedException();
+            var productModel = GetProductById(Id);
+            if(productModel != null)
+            {
+
+                if(_inventoryService.HasEnoughStock(productModel.Articles))
+                {
+
+                    _inventoryService.UpdateInventory(productModel.Articles);
+                }
+                else
+                {
+                    _logger.LogError("failed to sell the product: insufficient articles!");
+                }
+            } 
+            else
+            {
+                _logger.LogError("failed to sell the product: product doesn't exist!");
+            }
         }
     }
+
+
+
 }
