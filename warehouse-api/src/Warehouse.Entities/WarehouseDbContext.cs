@@ -21,7 +21,6 @@ namespace Warehouse.Entities
                 .HasIndex(p => new { p.ProductId, p.ArticleId })
                 .IsUnique();
 
-            modelBuilder.Ignore<ProductStock>();
         }
 
         public virtual DbSet<Article> Article { get; set; }

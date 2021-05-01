@@ -6,6 +6,8 @@ using Warehouse.Entities;
 using Warehouse.Entities.Models;
 using Warehouse.Services.DTO;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Warehouse.Services
 {
@@ -23,53 +25,104 @@ namespace Warehouse.Services
             _logger = logger;
             _inventoryService = inventoryService;
         }
-        public void AddProducts(IEnumerable<ProductModel> products)
+
+        public async Task AddProducts(IEnumerable<ProductModel> products)
         {
             // prevent the same product being added twice
             // more product properties can be used 
-            int productAlreadyDefined = _repoContext
+            var productAlreadyDefined = await _repoContext
                 .Product.Select(p => p.Name)
-                .Intersect(products.Select(p => p.Name)).Count();
-            if(productAlreadyDefined  == 0)
+                .Intersect(products.Select(p => p.Name)).AnyAsync();
+
+            if(!productAlreadyDefined)
             {
                 foreach(var product in products)
                 {
-                    Product prd = new Product();
-                    prd.Description = product.Description;
-                    prd.Name = product.Name;
-
-                    List<ProductDefinition> definitions = new List<ProductDefinition>();
-                    //load product articles
-                    foreach(var art in product.Articles)
-                    {
-                        ProductDefinition def = new ProductDefinition();
-                        def.ArticleAmount = art.Amount;
-                        def.ArticleId = art.Id;
-                        def.Price = 
-                            _inventoryService.GetArticleById(art.Id) == null 
-                            ? 0 
-                            : _inventoryService.GetArticleById(art.Id).Price * art.Amount;
-                        def.ProductId = product.Id;
-                        definitions.Add(def);
-                    }
-                    _repoContext.Product.Add(prd);
-                    _repoContext.ProductDefinition.AddRange(definitions);
+                    Product prd = CreateProduct(product);
+                    List<ProductDefinition> definitions = CreateProductDefinitions(product, prd);
+                    await _repoContext.Product.AddAsync(prd);
+                    await _repoContext.ProductDefinition.AddRangeAsync(definitions);
                 }
-                _repoContext.SaveChanges();
+                await _repoContext.SaveChangesAsync();
                 _logger.LogInformation("products 1, 2, 3 updated by DemoUser");
             } 
             else
             {
                 _logger.LogError("Update products failed: at least one produce already exists!");
             }
-
         }
 
-        public ProductModel GetProductById(int Id)
+        public async Task<ProductModel> GetProductById(int Id)
+        {       
+            var product = await _repoContext.Product.FindAsync(Id);
+            return product != null ? MapProduct(product) : null;
+        }
+
+        public async Task<Product> GetProductByName(string name) 
+            => await _repoContext.Product.FirstOrDefaultAsync(p => p.Name == name);
+
+        public async Task<ProductModel> AddProduct(ProductModel product)
+        {
+            var prod = await GetProductByName(product.Name);
+            if(prod == null)
+            {
+                Product prd = CreateProduct(product);
+                List<ProductDefinition> definitions = CreateProductDefinitions(product, prd);  
+                await _repoContext.Product.AddAsync(prd);
+                await _repoContext.ProductDefinition.AddRangeAsync(definitions);
+                await _repoContext.SaveChangesAsync();
+                return MapProduct(prd);
+            }
+            return null;
+        }
+
+        public async Task<ProductModel> UpdateProduct(ProductModel product)
+        {
+            var prod = await _repoContext.Product.FindAsync(product.Id);
+            if(prod != null)
+            {
+                prod.Name = product.Name;
+                prod.Description = product.Description;
+
+                _repoContext.ProductDefinition.RemoveRange(prod.ProductDefinitions);                
+                prod.ProductDefinitions = CreateProductDefinitions(product, prod);
+                await _repoContext.SaveChangesAsync();
+                return MapProduct(prod);
+            }
+            return product;
+        }
+
+        private List<ProductDefinition> CreateProductDefinitions(ProductModel product, Product prd)
+        {
+            List<ProductDefinition> definitions = new List<ProductDefinition>();
+            //load product articles
+            foreach (var art in product.Articles)
+            {
+                ProductDefinition def = new ProductDefinition();
+                def.ArticleAmount = art.Amount;
+                def.ArticleId = art.Id;
+                def.Price =
+                    _inventoryService.GetArticleById(art.Id) == null
+                    ? 0
+                    : _inventoryService.GetArticleById(art.Id).Price * art.Amount;
+                def.Product = prd;
+                definitions.Add(def);
+            }
+            return definitions;
+        }
+        
+        private Product CreateProduct(ProductModel product)
+        {
+            Product prd = new Product();
+            prd.Description = product.Description;
+            prd.Name = product.Name;
+            return prd;
+        }
+        
+        private ProductModel MapProduct(Product product)
         {
             ProductModel prodModel = new ProductModel();
-            var product = _repoContext.Product.Find(Id);
-            if(product != null)
+            if (product != null)
             {
                 // get product details
                 prodModel.Id = product.Id;
@@ -78,7 +131,7 @@ namespace Warehouse.Services
 
                 // get product definition/articles
                 List<ProductArticleModel> articles = new List<ProductArticleModel>();
-                foreach(var def in product.ProductDefinitions)
+                foreach (var def in product.ProductDefinitions)
                 {
                     ProductArticleModel article = new ProductArticleModel();
                     article.Id = def.ArticleId;
@@ -93,7 +146,21 @@ namespace Warehouse.Services
             }
             return prodModel;
         }
-
+        
+        public async Task<ProductModel> DeleteProductById(int id)
+        {
+            var prod = await _repoContext.Product.FindAsync(id);
+            if(prod != null)
+            {
+                _repoContext.ProductDefinition.RemoveRange(prod.ProductDefinitions);
+                _repoContext.Remove(prod);
+                var productModel = MapProduct(prod);
+                await _repoContext.SaveChangesAsync();
+                return productModel;
+            }
+            return null;
+        }
+        
         public IEnumerable<ProductModel> GetProducts()
         {
             List<ProductModel> productModels = new List<ProductModel>();
@@ -102,7 +169,7 @@ namespace Warehouse.Services
 
             foreach(var prod in products)
             {
-                var productModel = GetProductById(prod.Id);
+                var productModel = MapProduct(prod);
                 if(productModel != null)
                 {
                     productModels.Add(productModel);
@@ -112,16 +179,13 @@ namespace Warehouse.Services
             return productModels;
         }
 
-
-
         public IEnumerable<ProductStock> GetAllProductStocks() => _repoContext.ProductStock;
 
+        public async Task<ProductStock> GetProductStokById(int id) => await _repoContext.ProductStock.FindAsync(id);
 
-        public ProductStock GetProductStokById(int id) => _repoContext.ProductStock.FirstOrDefault(s => s.Id == id);
-
-        public void SellProduct(int Id)
+        public async Task<bool> SellProduct(int Id)
         {
-            var productModel = GetProductById(Id);
+            var productModel = await GetProductById(Id);
             if(productModel != null)
             {
 
@@ -129,6 +193,7 @@ namespace Warehouse.Services
                 {
 
                     _inventoryService.UpdateInventory(productModel.Articles);
+                    return true;
                 }
                 else
                 {
@@ -139,6 +204,7 @@ namespace Warehouse.Services
             {
                 _logger.LogError("failed to sell the product: product doesn't exist!");
             }
+            return false;
         }
     }
 

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Warehouse.API.Extensions;
 
@@ -26,10 +27,13 @@ namespace Warehouse.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             // db
             services.RegisterDbContext(Configuration);
-
+            //register warehouse services
+            services.RegisterWarehouseService();
+            // cors
+            services.ConfigureCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +48,9 @@ namespace Warehouse.API
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseCors();
+
+            // app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

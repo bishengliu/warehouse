@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Warehouse.Entities.Models;
 using Warehouse.Services.DTO;
 
@@ -13,7 +14,7 @@ namespace Warehouse.Services
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        ProductModel GetProductById(int Id);
+        Task<ProductModel> GetProductById(int Id);
 
         /// <summary>
         /// get all the product
@@ -25,19 +26,37 @@ namespace Warehouse.Services
         /// sell a product and update inventory
         /// </summary>
         /// <param name="Id"></param>
-        void SellProduct(int Id);
+        Task<bool> SellProduct(int Id);
 
         /// <summary>
         /// add new products
         /// </summary>
         /// <param name="products"></param>
-        void AddProducts(IEnumerable<ProductModel> products);
+        Task AddProducts(IEnumerable<ProductModel> products);
 
+        /// <summary>
+        /// add a product
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        Task<ProductModel> AddProduct(ProductModel product);
+        /// <summary>
+        /// update a product
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        Task<ProductModel> UpdateProduct(ProductModel product);
+        /// <summary>
+        /// delete a product
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        Task<ProductModel> DeleteProductById(int id);
         /// <summary>
         /// get stock info of a product
         /// </summary>
         /// <returns></returns>
-        ProductStock GetProductStokById(int id);
+        Task<ProductStock> GetProductStokById(int id);
 
         /// <summary>
         /// get stock info of all products
