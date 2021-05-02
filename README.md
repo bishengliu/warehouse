@@ -26,6 +26,7 @@ A simple .Net Core backend application for warehouse.
 | dockerfiles/mssql.Dockerfile                  | mssql server dockerfile |
 | dockerfiles/db                                | mssql init script |
 
+
 # Endpoint brief description
 | Endpoint | HttpMethod| Description|
 | ------------- | ------------- |:-------------:|
@@ -45,12 +46,11 @@ A simple .Net Core backend application for warehouse.
 | /api/Products/stocks | GET | get stock info for all product |
 | /api/Products/stocks/{id} | GET | get a product stock info |
 
-
-# database design
+# Database design
 ![warehouse db](./db_diagram.PNG)
 
 
-# file upload specification
+# File upload specification
 - you can upload a json file containing the articles via [http://localhost:8080/api/Inventory/upload](http://localhost:8080/api/Inventory/upload). The json file is expected to have the following structure: 
 
 
@@ -125,29 +125,29 @@ A simple .Net Core backend application for warehouse.
 
 ```
 
+# Branches
+- `main`: contains everything
+- `develop`: the develop branch; all the feature branches will be merged to the develop branch;
+- `test`, `acc` and `prod`: follows the order `test` => `acc` => `prod`;
+
+# Bersions:
+the `prod` branch has the version tag
 
 
-## DESIGN
+## Discission points
 
-####    Serverless or monolithic
+####    serverless or monolithic
+- why not choose `serverless`? it is possible that the application can be written using aws lambdas or azure functions. The major reasons not choose the serverless design are: 1) warehouse is at this moment relatively simple, chosing serverless is bit overkill; 2) simplicity for ops and code base;
+-  why not choose `monolithic`? while warehouse is relatively simple at this moment.The functionalities can grow very fast and the user base can also very large. It is also possible that we could have mutiple client applications (web front end, mobile apps etc);
 
 #### application design
-- frontend(REACT) plus backend (RESTful api)
-
-#### features
-
+- this application focuses on the backend API (RESTful api);
+- if time allows, build a frontend web application using (Angular, REACT or vue) will be ideal;
 
 #### SQL vs NON-SQL
+SQL database is chosen over non-sql with the assumption that the application is written heavy.
 
-#### db design
-
-
-#### deployment
-
-
-#### scalability
-
-
-#### points of furture improvement
+#### deployment && scalability
+the application is dockerized and can be deployed as containers using popular cloud providers or kubernetes clusters;
 
 
