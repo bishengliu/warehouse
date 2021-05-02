@@ -1,0 +1,34 @@
+version: "3"
+services:
+  warehouse-api:
+    container_name: warehouse-api
+    build:
+      context: .
+      dockerfile: ./dockerfiles/api.Dockerfile
+    depends_on:
+      - warehouse-mssql-db
+    env_file:
+      - ./dockerfiles/demo.env
+    ports:
+      - "8080:8080"
+    networks:
+      - warehouse-network
+
+  warehouse-mssql-db:
+   container_name: warehouse-mssql-db
+   restart: always
+   build:
+     context: .
+     dockerfile: ./dockerfiles/mssql.Dockerfile
+   environment:
+     - ACCEPT_EULA=Y
+     - SA_PASSWORD=P@ssw0rd
+     - MSSQL_PID=Express
+   ports:
+     - "1433:1433"
+   networks:
+     - warehouse-network
+
+networks:
+  warehouse-network:
+    name: warehouse-network
