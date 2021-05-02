@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Warehouse.Services.DTO;
 using System.Linq;
 using Warehouse.Entities.Models;
+using Warehouse.Services.Exceptions;
 
 namespace Warehouse.Services
 {
@@ -18,6 +19,7 @@ namespace Warehouse.Services
         }
         public async Task<string> ReadFileContent(IFormFile file)
         {
+            if (file.Length == 0) throw new UploadEmptyContentException("Upload file has no content!");
             var sb = new StringBuilder();
             using (var reader = new StreamReader(file.OpenReadStream()))
             {
