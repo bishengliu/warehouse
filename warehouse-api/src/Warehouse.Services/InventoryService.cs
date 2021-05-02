@@ -13,8 +13,8 @@ namespace Warehouse.Services
 {
     public class InventoryService : IInventoryService
     {
-        private WarehouseDbContext _repoContext;
-        private ILogger<InventoryService> _logger;
+        private readonly WarehouseDbContext _repoContext;
+        private readonly ILogger<InventoryService> _logger;
         public InventoryService(WarehouseDbContext reposContext, ILogger<InventoryService> logger)
         {
             _repoContext = reposContext;
@@ -189,7 +189,7 @@ namespace Warehouse.Services
                 throw;
             }
         }
-
+        
         public async Task<bool> IsArticleDefinedInProduct(int id) => await _repoContext.ProductDefinition.FirstOrDefaultAsync(d => d.ArticleId == id) != null;
     }
 }
