@@ -5,7 +5,7 @@ A simple .Net Core backend application for warehouse.
 ## Start application
 
 - install [Docker Compose](https://docs.docker.com/compose/install/);
-- run `docker-compose up -id` in the root of the application folder, where `docker-compose.yml` is located;
+- run `docker-compose up -d` in the root of the application folder, where `docker-compose.yml` is located;
 - endpoint **documentation**: [http://localhost:8080](http://localhost:8080/)
 - backend api basic **healthcheck** endpoint: [http://localhost:8080/health](http://localhost:8080/health)
 
