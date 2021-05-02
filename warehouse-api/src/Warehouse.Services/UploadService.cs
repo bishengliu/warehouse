@@ -53,5 +53,26 @@ namespace Warehouse.Services
             }         
             return products.AsEnumerable();
         }
+
+        public IEnumerable<Article> MapArticles(ArticleUploadModel articlesUpload)
+        {
+            List<Article> articles = new List<Article>();
+            foreach(var art in articlesUpload.Inventory)
+            {      
+                int id = 0;
+                int stock = 0;
+                decimal price = 0;
+                if (int.TryParse(art.Art_id, out id) && int.TryParse(art.Stock, out stock))
+                {
+                    Article article = new Article();
+                    article.Id = id;
+                    art.Name = art.Name;
+                    article.Stock = stock < 0 ? 0: stock;
+                    article.Price = price;
+                    articles.Add(article);
+                }    
+            }
+            return articles;
+        }
     }
 }

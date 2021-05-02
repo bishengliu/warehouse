@@ -29,40 +29,44 @@ namespace Warehouse.Services
 
         public async Task AddProducts(IEnumerable<ProductModel> products)
         {
-            // prevent the same product being added twice
-            // more product properties can be used 
-            var productNameGroups = products.GroupBy(p => p.Name);
-
-            if (productNameGroups.Count() != products.Count())
-            {
-                _logger.LogError("add products failed: at least one produte already exists!");
-                throw new ProductNameNotUniqueException("Product Names must be unique!");
-            } 
             try
             {
+                // prevent the same product being added twice
+                // more product properties can be used 
+                var productNameGroups = products.GroupBy(p => p.Name);
+                if (productNameGroups.Count() != products.Count())
+                {
+                    throw new ProductNameNotUniqueException("Product Names must be unique!");
+                }
+
                 foreach (var product in products)
                 {
                     Product prd = await CreateProduct(product);
-                    List<ProductDefinition> definitions = CreateProductDefinitions(product, prd);
+                    List<ProductDefinition> definitions = await CreateProductDefinitions(product, prd);
                     await _repoContext.Product.AddAsync(prd);
                     await _repoContext.ProductDefinition.AddRangeAsync(definitions);
                 }
                 await _repoContext.SaveChangesAsync();
                 _logger.LogInformation($"products added by DemoUser");
             }
+            catch (ProductNameIsNullException)
+            {
+                _logger.LogError($"add products failed: product name not provided!");
+                throw;
+            }
             catch (ProductNameNotUniqueException)
             {
-                _logger.LogError($"add product failed: a product with the same name already exists!");
+                _logger.LogError($"add products failed: a product with the same name already exists!");
                 throw;
             }
             catch (ArticleNotFoundException)
             {
-                _logger.LogError($"add product failed: article not found!");
+                _logger.LogError($"add products failed: article not found!");
                 throw;
             }
             catch (Exception)
             {
-                _logger.LogError("add product failed: an unkown error encountered!");
+                _logger.LogError("add products failed: an unkown error encountered!");
                 throw;
             }           
         }
@@ -81,11 +85,16 @@ namespace Warehouse.Services
             try
             {
                 Product prd = await CreateProduct(product);
-                List<ProductDefinition> definitions = CreateProductDefinitions(product, prd);
+                List<ProductDefinition> definitions = await CreateProductDefinitions(product, prd);
                 await _repoContext.Product.AddAsync(prd);
                 await _repoContext.ProductDefinition.AddRangeAsync(definitions);
                 await _repoContext.SaveChangesAsync();
                 return MapProduct(prd);
+            }
+            catch (ProductNameIsNullException)
+            {
+                _logger.LogError($"update product {product.Id} failed: product name not provided!");
+                throw;
             }
             catch (ProductNameNotUniqueException)
             {
@@ -110,12 +119,21 @@ namespace Warehouse.Services
             {
                 var prod = await _repoContext.Product.FindAsync(product.Id);
                 prod.Name = product.Name;
+                if(product.Name == string.Empty)
+                {                    
+                    throw new ProductNameIsNullException($"update product {product.Id} failed: product name not provided!");
+                }
                 prod.Description = product.Description;
 
                 _repoContext.ProductDefinition.RemoveRange(prod.ProductDefinitions);
-                prod.ProductDefinitions = CreateProductDefinitions(product, prod);
+                prod.ProductDefinitions = await CreateProductDefinitions(product, prod);
                 await _repoContext.SaveChangesAsync();
                 return MapProduct(prod);
+            }
+            catch (ProductNameIsNullException)
+            {
+                _logger.LogError($"update product {product.Id} failed: product name not provided!");
+                throw;
             }
             catch (ProductNotFoundException)
             {
@@ -134,13 +152,13 @@ namespace Warehouse.Services
             }
         }
 
-        private List<ProductDefinition> CreateProductDefinitions(ProductModel product, Product prd)
+        private async Task<List<ProductDefinition>> CreateProductDefinitions(ProductModel product, Product prd)
         {
             List<ProductDefinition> definitions = new List<ProductDefinition>();
             //load product articles
             foreach (var art in product.Articles)
             {
-                var article = _inventoryService.GetArticleById(art.Id);
+                var article = await _inventoryService.GetArticleById(art.Id);
                 if(article == null)
                 {
                     _logger.LogError($"No article found with Id {art.Id}!");
@@ -149,10 +167,7 @@ namespace Warehouse.Services
                 ProductDefinition def = new ProductDefinition();
                 def.ArticleAmount = art.Amount;
                 def.ArticleId = art.Id;
-                def.Price =
-                    _inventoryService.GetArticleById(art.Id) == null
-                    ? 0
-                    : _inventoryService.GetArticleById(art.Id).Price * art.Amount;
+                def.Price = article.Price <= 0 ? 0 : article.Price * art.Amount;
                 def.Product = prd;
                 definitions.Add(def);
             }
@@ -161,6 +176,11 @@ namespace Warehouse.Services
         
         private async Task<Product> CreateProduct(ProductModel product)
         {
+            if (product.Name == string.Empty)
+            {
+                _logger.LogError($"add product {product.Id} failed: product name not provided!");
+                throw new ProductNameIsNullException($"add product {product.Id} failed: product name not provided!");
+            }
             var prod = await GetProductByName(product.Name);
             if(prod != null)
             {
@@ -170,6 +190,7 @@ namespace Warehouse.Services
             Product prd = new Product();
             prd.Description = product.Description;
             prd.Name = product.Name;
+       
             return prd;
         }
         
@@ -203,17 +224,26 @@ namespace Warehouse.Services
         
         public async Task<ProductModel> DeleteProductById(int id)
         {
-            var prod = await _repoContext.Product.FindAsync(id);
-            if(prod != null)
+            try
             {
+                var prod = await _repoContext.Product.FindAsync(id);
+                if (prod != null) throw new ProductNotFoundException("Product doesn't exist!");
+                         
                 _repoContext.ProductDefinition.RemoveRange(prod.ProductDefinitions);
-                _repoContext.Remove(prod);
+                _repoContext.Product.Remove(prod);
                 var productModel = MapProduct(prod);
                 await _repoContext.SaveChangesAsync();
                 return productModel;
             }
-            _logger.LogError("delete product failed: product not found!");
-            throw new ProductNotFoundException("Product doesn't exist!");
+            catch (ProductNotFoundException)
+            {
+                _logger.LogError("delete product failed: product not found!");
+                throw;
+            }
+            catch (Exception){
+                _logger.LogError("delete product failed: an unkown error encountered!");
+                throw;
+            }   
         }
         
         public IEnumerable<ProductModel> GetProducts()
@@ -240,18 +270,32 @@ namespace Warehouse.Services
 
         public async Task SellProduct(int Id)
         {
-            var productModel = await GetProductById(Id);
-            if(productModel != null)
+            try
             {
-                if(_inventoryService.HasEnoughStock(productModel.Articles))
-                {
-                    _inventoryService.UpdateInventory(productModel.Articles);
-                }
-                _logger.LogError($"failed to sell product {Id}: insufficient articles!");
-                throw new InsufficientArticlesException($"failed to sell product {Id}: insufficient articles!");
+                var productModel = await GetProductById(Id);
+                if(productModel == null)
+                    throw new ProductNotFoundException($"sell product failed: product {Id} not found!");
+                if (! await _inventoryService.HasSufficientStock(productModel.Articles))
+                    throw new InsufficientArticlesException($"failed to sell product {Id}: insufficient articles!");
+                // sell
+                await _inventoryService.UpdateInventoryStock(productModel.Articles);                
             }
-            _logger.LogError($"sell product failed: product {Id} not found!");
-            throw new ProductNotFoundException($"sell product failed: product {Id} not found!");            
+            catch(InsufficientArticlesException)
+            {
+                _logger.LogError($"failed to sell product {Id}: insufficient articles!");
+                throw;
+            }
+            catch(ProductNotFoundException)
+            {
+                _logger.LogError($"sell product failed: product {Id} not found!");
+                throw;
+            }
+            catch (Exception)
+            {
+                _logger.LogError("sell the product failed: an unkown error encountered!");
+                throw;
+            }
+                     
         }
     }
 }
