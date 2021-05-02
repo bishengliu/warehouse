@@ -5,11 +5,17 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Warehouse.Services.DTO;
+using System.Linq;
+using Warehouse.Entities.Models;
 
 namespace Warehouse.Services
 {
     public class UploadService : IUploadService
     {
+        public UploadService()
+        {
+
+        }
         public async Task<string> ReadFileContent(IFormFile file)
         {
             var sb = new StringBuilder();
@@ -23,8 +29,29 @@ namespace Warehouse.Services
 
         public IEnumerable<ProductModel> MapProducts(ProductUploadModel productsUpload)
         {
-            // todo
-            return null;
+            List<ProductModel> products = new List<ProductModel>();
+            foreach (var prod in productsUpload.Products)
+            {
+                ProductModel product = new ProductModel();
+                List<ProductArticleModel> articles = new List<ProductArticleModel>();
+                product.Name = prod.Name;
+                foreach(var art in prod.Contain_articles)
+                {
+                    ProductArticleModel article = new ProductArticleModel();
+
+                    int id = -1;
+                    int amount = 0;
+                    if(int.TryParse(art.Art_id, out id) && int.TryParse(art.Amount_of, out amount))
+                    {
+                        article.Id = id;
+                        article.Amount = amount;
+                    }
+                    articles.Add(article);
+                }
+                product.Articles = articles;
+                products.Add(product);
+            }         
+            return products.AsEnumerable();
         }
     }
 }
