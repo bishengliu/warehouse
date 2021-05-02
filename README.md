@@ -151,3 +151,7 @@ SQL database is chosen over non-sql with the assumption that the application is 
 the application is dockerized and can be deployed as containers using popular cloud providers or kubernetes clusters;
 
 
+#### future improvement
+- authentication /authorization: at this moment there is no authentication / authorization directly handled in the application. This is based on the assumption there will be a centrilized authentication /authorization layer, like api gateway layer, that is handling them via token or certs. 
+
+- prepare the CI/CD pipeline using Github actions, Jenkins/Ansible etc.
