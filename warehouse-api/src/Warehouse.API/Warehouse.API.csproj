@@ -22,5 +22,9 @@
     <ProjectReference Include="..\Warehouse.Services\Warehouse.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+	<None Include="appsettings.Production.json" CopyToPublishDirectory="Always" />
+	<None Include="appsettings.json" CopyToPublishDirectory="Always" />
+  </ItemGroup>
 
 </Project>
