@@ -16,7 +16,9 @@ namespace Warehouse.API.Extensions
             string connectionString = configureation.GetValue<string>("WarehouseDb:ConnectionString");
 
             services.AddDbContext<WarehouseDbContext>(o =>
-                o.UseSqlServer(connectionString, options => options.MigrationsAssembly("Warehouse.Entities")));
+                // lazy loading
+                o.UseLazyLoadingProxies()
+                .UseSqlServer(connectionString, options => options.MigrationsAssembly("Warehouse.Entities")));
 
         }
     }
