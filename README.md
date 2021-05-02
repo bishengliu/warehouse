@@ -47,7 +47,7 @@ A simple .Net Core backend application for warehouse.
 
 
 # database design
-![warehouse db](./db_diagram.png)
+![warehouse db](./db_diagram.PNG)
 
 
 # file upload specification
