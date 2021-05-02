@@ -15,6 +15,7 @@ using Warehouse.Services.DTO;
 
 namespace Warehouse.API.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -36,8 +37,11 @@ namespace Warehouse.API.Controllers
             _logger = logger;
             _uploadService = uploadService;
         }
-        // GET: api/<ProductController>
-        // get all the products (be aware of the performance)
+
+        /// <summary>
+        /// Get all the products
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<ProductModel> GetProducts()
         {
@@ -47,6 +51,8 @@ namespace Warehouse.API.Controllers
         // GET api/<ProductController>/5
         // get a product by product Id
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetProductById(int id)
         {
             var product = await _productService.GetProductById(id);
@@ -63,6 +69,8 @@ namespace Warehouse.API.Controllers
 
         // get a product stock info
         [HttpGet("stocks/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetProductStockById(int id)
         {
             var productStock = await _productService.GetProductStokById(id);
@@ -105,6 +113,8 @@ namespace Warehouse.API.Controllers
 
         // PUT api/<ProductController>/5
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateProductById(int id, [FromBody] ProductModel productModel)
         {
             var product = await _productService.GetProductById(id);
@@ -116,6 +126,8 @@ namespace Warehouse.API.Controllers
 
         // DELETE api/<ProductController>/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteProductById(int id)
         {
             var product = await _productService.GetProductById(id);

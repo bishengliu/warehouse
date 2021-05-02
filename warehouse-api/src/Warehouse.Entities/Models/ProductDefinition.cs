@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Warehouse.Entities.Models
@@ -13,9 +14,12 @@ namespace Warehouse.Entities.Models
         }
 
         public int Id { get; set; }
+        [Required]
         public int ProductId { get; set; }
         public decimal Price { get; set; }
+        [Required]
         public int ArticleId { get; set; }
+        [Required]
         public int ArticleAmount { get; set; }
 
         public DateTime UpdateAt { get; set; }
