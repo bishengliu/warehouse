@@ -130,8 +130,8 @@ A simple .Net Core backend application for warehouse.
 - `develop`: the develop branch; all the feature branches will be merged to the develop branch;
 - `test`, `acc` and `prod`: follows the order `test` => `acc` => `prod`;
 
-## Bersions:
-the `prod` branch has the version tag
+## Versions:
+the `prod` branch has the version tags.
 
 
 ## Discission points
