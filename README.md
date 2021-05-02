@@ -2,14 +2,14 @@
 
 A simple .Net Core backend application for warehouse. 
 
-# start application
+## Start application
 
-- install [Docker Compise](https://docs.docker.com/compose/install/);
+- install [Docker Compose](https://docs.docker.com/compose/install/);
 - run `docker-compose up -id` in the root of the application folder, where `docker-compose.yml` is located;
 - endpoint **documentation**: [http://localhost:8080](http://localhost:8080/)
 - backend api basic **healthcheck** endpoint: [http://localhost:8080/health](http://localhost:8080/health)
 
-# Project file structure
+## Project file structure
 
 | Folder/File                                   | Description |
 | -------------                                 |:-------------:|
@@ -27,7 +27,7 @@ A simple .Net Core backend application for warehouse.
 | dockerfiles/db                                | mssql init script |
 
 
-# Endpoint brief description
+## Endpoint brief description
 | Endpoint | HttpMethod| Description|
 | ------------- | ------------- |:-------------:|
 | /api/Inventory | GET | get all articles|
@@ -46,11 +46,11 @@ A simple .Net Core backend application for warehouse.
 | /api/Products/stocks | GET | get stock info for all product |
 | /api/Products/stocks/{id} | GET | get a product stock info |
 
-# Database design
+## Database design
 ![warehouse db](./db_diagram.PNG)
 
 
-# File upload specification
+## File upload specification
 - you can upload a json file containing the articles via [http://localhost:8080/api/Inventory/upload](http://localhost:8080/api/Inventory/upload). The json file is expected to have the following structure: 
 
 
@@ -125,12 +125,12 @@ A simple .Net Core backend application for warehouse.
 
 ```
 
-# Branches
+## Branches
 - `main`: contains everything
 - `develop`: the develop branch; all the feature branches will be merged to the develop branch;
 - `test`, `acc` and `prod`: follows the order `test` => `acc` => `prod`;
 
-# Bersions:
+## Bersions:
 the `prod` branch has the version tag
 
 
