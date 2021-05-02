@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Warehouse.Entities.Models
 {
@@ -8,7 +10,7 @@ namespace Warehouse.Entities.Models
     {
         public Article()
         {
-            ProductDefinitions = new HashSet<ProductDefinition>();
+            // ProductDefinitions = new HashSet<ProductDefinition>();
             UpdateAt = DateTime.UtcNow;
             UpdateBy = "DemoUser";
         }
@@ -18,8 +20,9 @@ namespace Warehouse.Entities.Models
         public int Stock { get; set; }
         public string Description { get; set; }
         public DateTime UpdateAt { get; set; }
-        public string   UpdateBy { get; set; }
+        public string UpdateBy { get; set; }
 
+        [IgnoreDataMember]
         public virtual ICollection<ProductDefinition> ProductDefinitions { get; set; }
     }
 }
