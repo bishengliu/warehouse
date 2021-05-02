@@ -48,8 +48,11 @@ namespace Warehouse.API.Controllers
             return _productService.GetProducts();
         }
 
-        // GET api/<ProductController>/5
-        // get a product by product Id
+        /// <summary>
+        /// get an product by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -60,14 +63,22 @@ namespace Warehouse.API.Controllers
             return Ok(product);
         }
 
-        // get all the product stock info
+
+        /// <summary>
+        /// get stock info of all products
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("stocks")]
         public IEnumerable<ProductStock> GetProductStocks()
         {
             return _productService.GetAllProductStocks();
         }
 
-        // get a product stock info
+        /// <summary>
+        /// get stock info of a product
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("stocks/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -78,6 +89,11 @@ namespace Warehouse.API.Controllers
             return Ok(productStock);
         }
 
+        /// <summary>
+        /// sell a product and update inventory stock
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost("sell")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -94,13 +110,22 @@ namespace Warehouse.API.Controllers
             return Ok();
         }
 
-        // POST api/<ProductController>
+        /// <summary>
+        /// add new product
+        /// </summary>
+        /// <param name="productModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ProductModel> AddProuct([FromBody] ProductModel productModel)
         {
             return await _productService.AddProduct(productModel);
         }
 
+        /// <summary>
+        /// upload products from a json file
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost("upload")]
         public async Task<IEnumerable<ProductModel>> UploadProducts(IFormFile file)
         {
@@ -111,7 +136,12 @@ namespace Warehouse.API.Controllers
             return products;
         }
 
-        // PUT api/<ProductController>/5
+        /// <summary>
+        /// update product details
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="productModel"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -124,7 +154,11 @@ namespace Warehouse.API.Controllers
             return Ok(await _productService.UpdateProduct(productModel));
         }
 
-        // DELETE api/<ProductController>/5
+        /// <summary>
+        /// delete a product
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -36,22 +36,40 @@ namespace Warehouse.API.Controllers
             _logger = logger;
             _uploadService = uploadService;
         }
-        // GET: api/<InventoryController>
+        
+        /// <summary>
+        /// get all the inventory articles
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<Article> GetArticles() => _inventoryService.GetArticles();
 
-        // GET api/<InventoryController>/5
+        
+        /// <summary>
+        /// get an article by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<Article> GetArticleById(int id) => await _inventoryService.GetArticleById(id);
 
 
-        // POST api/<InventoryController>
+        /// <summary>
+        /// add a new article
+        /// </summary>
+        /// <param name="article"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<Article> AddArticle([FromBody] Article article)
         {
             return await _inventoryService.AddArticle(article);
         }
 
+        /// <summary>
+        /// upload the articles from a json file. 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost("upload")]
         public async Task<IEnumerable<Article>> Uploadrticles(IFormFile file)
         {
@@ -63,7 +81,12 @@ namespace Warehouse.API.Controllers
 
         }
 
-        // PUT api/<InventoryController>/5
+        /// <summary>
+        /// update an article by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="art"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -76,7 +99,12 @@ namespace Warehouse.API.Controllers
             return Ok(await _inventoryService.UpadteArticle(art));
         }
 
-        // DELETE api/<InventoryController>/5
+
+        /// <summary>
+        /// delete an article by id. Prevent deleting the article if defined in a product
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
