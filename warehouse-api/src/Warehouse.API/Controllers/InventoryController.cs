@@ -21,14 +21,15 @@ namespace Warehouse.API.Controllers
         private readonly IInventoryService _inventoryService;
         private readonly ILogger<InventoryController> _logger;
         private readonly IUploadService _uploadService;
+
         private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
         {
             IgnoreNullValues = true,
             PropertyNameCaseInsensitive = true
         };
-        public InventoryController(IInventoryService inventoryService,
-            ILogger<InventoryController> logger,
-            IUploadService uploadService)
+        public InventoryController(IInventoryService inventoryService
+            , ILogger<InventoryController> logger
+            , IUploadService uploadService)
         {
             _inventoryService = inventoryService;
             _logger = logger;
@@ -67,8 +68,9 @@ namespace Warehouse.API.Controllers
         {
             var article = await _inventoryService.GetArticleById(id);
             if (article == null) return BadRequest();
+            art.Id = article.Id;
 
-            return Ok(_inventoryService.UpadteArticle(article));
+            return Ok(await _inventoryService.UpadteArticle(art));
         }
 
         // DELETE api/<InventoryController>/5
@@ -78,7 +80,7 @@ namespace Warehouse.API.Controllers
             var article = await _inventoryService.GetArticleById(id);
             if (article == null) return BadRequest();
 
-            return Ok(_inventoryService.DeleteArticleById(id));
+            return Ok(await _inventoryService.DeleteArticleById(id));
         }
     }
 }

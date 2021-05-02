@@ -66,7 +66,7 @@ namespace Warehouse.Services
                 {
                     Article article = new Article();
                     article.Id = id;
-                    art.Name = art.Name;
+                    article.Name = art.Name;
                     article.Stock = stock < 0 ? 0: stock;
                     article.Price = price;
                     articles.Add(article);
