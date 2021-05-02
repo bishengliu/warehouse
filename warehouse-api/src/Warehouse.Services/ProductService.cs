@@ -14,9 +14,9 @@ namespace Warehouse.Services
 {
     public class ProductService : IProductService
     {
-        private WarehouseDbContext _repoContext;
-        private ILogger<ProductService> _logger;
-        private IInventoryService _inventoryService;
+        private readonly WarehouseDbContext _repoContext;
+        private readonly ILogger<ProductService> _logger;
+        private readonly IInventoryService _inventoryService;
         public ProductService(WarehouseDbContext repoContext, 
             ILogger<ProductService> logger,
             IInventoryService inventoryService
@@ -164,11 +164,14 @@ namespace Warehouse.Services
                     _logger.LogError($"No article found with Id {art.Id}!");
                     throw new ArticleNotFoundException($"No article found with Id {art.Id}!");
                 }
-                ProductDefinition def = new ProductDefinition();
-                def.ArticleAmount = art.Amount;
-                def.ArticleId = art.Id;
-                def.Price = article.Price <= 0 ? 0 : article.Price * art.Amount;
-                def.Product = prd;
+                ProductDefinition def = new ProductDefinition()
+                {
+                    ArticleAmount = art.Amount,
+                    ArticleId = art.Id,
+                    Price = article.Price <= 0 ? 0 : article.Price * art.Amount,
+                    Product = prd,
+
+                };
                 definitions.Add(def);
             }
             return definitions;
@@ -187,10 +190,11 @@ namespace Warehouse.Services
                 _logger.LogError($"add product failed: a product with the same name {product.Name} already exists!");
                 throw new ProductNameNotUniqueException($"Product Name must be unique: a product with the same name {product.Name} already exists!");
             }
-            Product prd = new Product();
-            prd.Description = product.Description;
-            prd.Name = product.Name;
-       
+            Product prd = new Product()
+            {
+                Name = product.Name,
+                Description = product.Description
+            };            
             return prd;
         }
         
@@ -208,11 +212,12 @@ namespace Warehouse.Services
                 List<ProductArticleModel> articles = new List<ProductArticleModel>();
                 foreach (var def in product.ProductDefinitions)
                 {
-                    ProductArticleModel article = new ProductArticleModel();
-                    article.Id = def.ArticleId;
-                    article.Name = def.Article.Name;
-                    article.Amount = def.ArticleAmount;
-                    article.Price = def.Price;
+                    ProductArticleModel article = new ProductArticleModel() {
+                        Id = def.ArticleId,
+                        Name = def.Article.Name,
+                        Amount = def.ArticleAmount,
+                        Price = def.Price,
+                    };
                     articles.Add(article);
                 }
 

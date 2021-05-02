@@ -40,10 +40,7 @@ namespace Warehouse.Services
                 foreach(var art in prod.Contain_articles)
                 {
                     ProductArticleModel article = new ProductArticleModel();
-
-                    int id = -1;
-                    int amount = 0;
-                    if(int.TryParse(art.Art_id, out id) && int.TryParse(art.Amount_of, out amount))
+                    if(int.TryParse(art.Art_id, out int id) && int.TryParse(art.Amount_of, out int amount))
                     {
                         article.Id = id;
                         article.Amount = amount;
@@ -61,16 +58,15 @@ namespace Warehouse.Services
             List<Article> articles = new List<Article>();
             foreach(var art in articlesUpload.Inventory)
             {      
-                int id = 0;
-                int stock = 0;
                 decimal price = 0;
-                if (int.TryParse(art.Art_id, out id) && int.TryParse(art.Stock, out stock))
+                if (int.TryParse(art.Art_id, out int id) && int.TryParse(art.Stock, out int stock))
                 {
-                    Article article = new Article();
-                    article.Id = id;
-                    article.Name = art.Name;
-                    article.Stock = stock < 0 ? 0: stock;
-                    article.Price = price;
+                    Article article = new Article() {
+                        Id = id,
+                        Name = art.Name,
+                        Stock = stock < 0 ? 0 : stock,
+                        Price = price
+                    };
                     articles.Add(article);
                 }    
             }

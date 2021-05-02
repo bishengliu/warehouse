@@ -49,19 +49,17 @@ namespace Warehouse.API.Extensions
                 bool migrateOnStart = configureation.GetValue<bool>("DBMigration:OnStart");
                 if (migrateOnStart)
                 {
-                    using (var repoContext = scope.ServiceProvider.GetRequiredService<WarehouseDbContext>())
+                    using var repoContext = scope.ServiceProvider.GetRequiredService<WarehouseDbContext>();
+                    try
                     {
-                        try
-                        {
-                            repoContext.Database.Migrate();
-                            // create a view for product stock
-                            repoContext.Database.ExecuteSqlCommandAsync(script);
-                        }
-                        catch (Exception ex)
-                        {
-                            throw;
+                        repoContext.Database.Migrate();
+                        // create a view for product stock
+                        repoContext.Database.ExecuteSqlRawAsync(script);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
 
-                        }
                     }
                 }
             }            
