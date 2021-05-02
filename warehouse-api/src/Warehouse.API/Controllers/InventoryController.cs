@@ -14,6 +14,7 @@ using Warehouse.Services.DTO;
 
 namespace Warehouse.API.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class InventoryController : ControllerBase
@@ -64,6 +65,8 @@ namespace Warehouse.API.Controllers
 
         // PUT api/<InventoryController>/5
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateArticle(int id, [FromBody] Article art)
         {
             var article = await _inventoryService.GetArticleById(id);
@@ -75,6 +78,8 @@ namespace Warehouse.API.Controllers
 
         // DELETE api/<InventoryController>/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteArticleById(int id)
         {
             var article = await _inventoryService.GetArticleById(id);
