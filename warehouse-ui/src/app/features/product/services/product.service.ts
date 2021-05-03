@@ -23,7 +23,7 @@ export class ProductService{
     }
 
     GetAllProductStocks() {
-        return this.http.get<ProductStock[]>(environment.apiEndpoint + "products/stock")
+        return this.http.get<ProductStock[]>(environment.apiEndpoint + "products/stocks")
         .pipe(
             retry(3),
             catchError(this.handleError)
