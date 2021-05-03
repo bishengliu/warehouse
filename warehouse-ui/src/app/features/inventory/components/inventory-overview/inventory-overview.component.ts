@@ -23,11 +23,11 @@ export class InventoryOverviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    var result = this.inventoryService.GetAllArticles();
-    result.subscribe(articles => {
-      // console.log(this.articles);
-      this.dataSource = new MatTableDataSource(articles);
-    });
+    this.inventoryService.GetAllArticles()
+      .subscribe(articles => {
+        // console.log(this.articles);
+        this.dataSource = new MatTableDataSource(articles);
+      });
     
   }
 

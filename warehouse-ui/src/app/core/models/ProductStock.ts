@@ -1,4 +1,4 @@
-export class ProductStock {
+export interface ProductStock {
     id: number;
     name: number;
     stock: number;

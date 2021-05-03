@@ -15,7 +15,7 @@ import { ProductUploadComponent } from './features/product/components/product-up
 import { ProductStockOverviewComponent } from './features/product/components/product-stock-overview/product-stock-overview.component';
 
 import { InventoryService } from './features/inventory/services/inventory.service';
-
+import { ProductService } from './features/product/services/product.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,7 +33,8 @@ import { InventoryService } from './features/inventory/services/inventory.servic
     AppMaterialModule
   ],
   providers: [
-    InventoryService
+    InventoryService,
+    ProductService
   ],
   bootstrap: [AppComponent]
 })
