@@ -1,0 +1,44 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <button mat-icon-button [routerLink]="'/'">
+      <mat-icon>home</mat-icon>
+    </button>
+    <h1>Warehouse</h1>
+    <span class="menu-spacer"></span>
+
+    <button mat-button [matMenuTriggerFor]="imenu">
+      <span>Inventory</span>
+    </button>
+    <mat-menu #imenu="matMenu">
+      <button mat-menu-item  [routerLink]="'/inventory'">
+        <mat-icon>list</mat-icon>
+        <span>Artcile Overview</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>upload file</mat-icon>
+        <span>Upload Articles</span>
+      </button>
+    </mat-menu>
+
+    <button mat-button [matMenuTriggerFor]="pmenu">
+      <span>Products</span>
+    </button>
+    <mat-menu #pmenu="matMenu">
+      <button mat-menu-item [routerLink]="'/products'">
+        <mat-icon>list</mat-icon>
+        <span>Product Overview</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>upload file</mat-icon>
+        <span>Upload Products</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>bar_chart</mat-icon>
+        <span>Stock Overview</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+
+<router-outlet></router-outlet>
