@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 import { Observable, throwError } from 'rxjs';
@@ -29,6 +29,14 @@ export class ProductService{
             catchError(this.handleError)
         );       
     }
+
+    SellAProduct(id: number){
+        return this.http.post<number>(environment.apiEndpoint + "Products/sell", id)
+        .pipe(
+            retry(3),
+            catchError(this.handleError)
+        )
+    };
 
     private handleError(error: HttpErrorResponse) {
         if (error.status === 0) {

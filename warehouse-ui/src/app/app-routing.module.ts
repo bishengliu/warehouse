@@ -10,16 +10,19 @@ import { ProductStockOverviewComponent } from './features/product/components/pro
 
 
 const routes: Routes = [
+  {path: '', component: InventoryOverviewComponent},
   {path: 'inventory', component: InventoryOverviewComponent},
   {path: 'inventory/upload', component: InventoryUploadComponent},
   {path: 'products', component: ProductOverviewComponent},
   {path: 'products/upload', component: ProductUploadComponent},
   {path: 'products/stock', component: ProductStockOverviewComponent },
-  { path: '**', redirectTo: '/', pathMatch: "full" }
+  { path: '**', redirectTo: '/inventory', pathMatch: "full" }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    onSameUrlNavigation: 'reload'
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

@@ -12,7 +12,7 @@ import { Article } from '../../../../core/models/Article';
 })
 export class InventoryOverviewComponent implements OnInit {
 
-  displayedColumns: string[] = ['id', 'name', 'price', 'stock', 'description', 'action'];
+  displayedColumns: string[] = ['id', 'name', 'price', 'stock', 'description'];
   dataSource : MatTableDataSource<Article> = new MatTableDataSource();
 
   constructor(private inventoryService: InventoryService) {}
