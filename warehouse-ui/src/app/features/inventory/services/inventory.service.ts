@@ -5,12 +5,16 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
+import { environment } from '../../../../environments/environment';
+
+import { Article } from '../../../core/models/Article';
+
 @Injectable()
 export class InventoryService{
     constructor(private http: HttpClient) { }
 
     GetAllArticles() {
-        return this.http.get("http://localhost:8080/api/inventory/")
+        return this.http.get<Article[]>(environment.apiEndpoint + "inventory")
         .pipe(
             retry(3),
             catchError(this.handleError)
