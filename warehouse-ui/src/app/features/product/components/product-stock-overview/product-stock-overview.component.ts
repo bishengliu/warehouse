@@ -14,7 +14,6 @@ import { ProductStock } from '../../../../core/models/ProductStock';
 export class ProductStockOverviewComponent implements OnInit {
 
   dataSource : MatTableDataSource<ProductStock> = new MatTableDataSource<ProductStock> ();
-  // events: Events;
   displayedColumns = ['id', 'name', 'stock', 'price', 'action'];
   constructor(private productService: ProductService, private router: Router) { }
 
