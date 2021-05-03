@@ -14,7 +14,7 @@
         <mat-icon>list</mat-icon>
         <span>Artcile Overview</span>
       </button>
-      <button mat-menu-item disabled>
+      <button mat-menu-item [routerLink]="'/inventory/upload'">
         <mat-icon>upload file</mat-icon>
         <span>Upload Articles</span>
       </button>
@@ -28,11 +28,11 @@
         <mat-icon>list</mat-icon>
         <span>Product Overview</span>
       </button>
-      <button mat-menu-item disabled>
+      <button mat-menu-item [routerLink]="'/products/upload'">
         <mat-icon>upload file</mat-icon>
         <span>Upload Products</span>
       </button>
-      <button mat-menu-item>
+      <button mat-menu-item [routerLink]="'/products/stock'">
         <mat-icon>bar_chart</mat-icon>
         <span>Stock Overview</span>
       </button>
