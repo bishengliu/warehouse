@@ -137,8 +137,8 @@ the `prod` branch has the version tags.
 ## Discission points
 
 ####    serverless or monolithic
-- why not choose `serverless`? it is possible that the application can be written using aws lambdas or azure functions. The major reasons not choose the serverless design are: 1) warehouse is at this moment relatively simple, chosing serverless is bit overkill; 2) simplicity for ops and code base;
--  why not choose `monolithic`? while warehouse is relatively simple at this moment.The functionalities can grow very fast and the user base can also very large. It is also possible that we could have mutiple client applications (web front end, mobile apps etc);
+- why not choose `serverless`? it is possible (also be open to this option) that the application can be written using aws lambdas or azure functions. The major reasons not to choose the serverless design at this moment are: 1) warehouse is at this moment relatively simple, chosing serverless is bit overkill; 2) simplicity for ops and code base; 
+- why not choose `monolithic`? while warehouse is relatively simple at this moment.The functionalities can grow very fast and the user base can also very large. It is also possible that we could have mutiple client applications (web front end, mobile apps etc);
 
 #### application design
 - this application focuses on the backend API (RESTful api);
@@ -155,3 +155,8 @@ the application is dockerized and can be deployed as containers using popular cl
 - authentication /authorization: at this moment there is no authentication / authorization directly handled in the application. This is based on the assumption there will be a centrilized authentication /authorization layer, like api gateway layer, that is handling them via token or certs. 
 
 - prepare the CI/CD pipeline using Github actions, Jenkins/Ansible etc.
+
+- parepare the infra as code if needed.
+
+- logs and performance monitoring
+
