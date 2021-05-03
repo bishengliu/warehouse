@@ -4,6 +4,6 @@
 
 export const environment = {
   production: false,
-  // apiEndpoint: "http://localhost:8080/api/",
-  apiEndpoint: "https://localhost:44355/api/",
+  apiEndpoint: "http://localhost:8080/api/",
+  // apiEndpoint: "https://localhost:44355/api/",
 };
