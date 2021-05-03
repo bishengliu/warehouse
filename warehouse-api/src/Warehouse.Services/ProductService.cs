@@ -255,7 +255,7 @@ namespace Warehouse.Services
         {
             List<ProductModel> productModels = new List<ProductModel>();
 
-            var products = _repoContext.Product;
+            var products = _repoContext.Product.ToList();
 
             foreach(var prod in products)
             {
