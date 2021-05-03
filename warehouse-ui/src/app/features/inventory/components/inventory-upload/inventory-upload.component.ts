@@ -21,8 +21,8 @@ export class InventoryUploadComponent implements OnInit {
 
       this.inventoryService.UploadArticles(file)
       .subscribe(
-        _ => this.router.navigate(['']));
-  }
+        _ => this.router.navigate(['/inventory']));
+    }
   }
   ngOnInit(): void {
   }

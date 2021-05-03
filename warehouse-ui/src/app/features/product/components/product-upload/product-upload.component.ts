@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-product-upload',
@@ -7,7 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProductUploadComponent implements OnInit {
 
-  constructor() { }
+  fileName: string = "";
+  constructor(private productService: ProductService, private router: Router) { }
+
+  onFileSelected(event: any) {
+    const file : File = event.target.files[0];
+    if (file) {
+
+      this.fileName = file.name;
+
+      this.productService.UploadArticles(file)
+      .subscribe(
+        _ => this.router.navigate(['/products']));
+    }
+  }
 
   ngOnInit(): void {
   }
