@@ -28,7 +28,19 @@ services:
      - "1433:1433"
    networks:
      - warehouse-network
-
+  
+  warehouse-ui:
+    container_name: warehouse-ui
+    build:
+      context: .
+      dockerfile: ./dockerfiles/ui.Dockerfile
+    depends_on: 
+      - warehouse-api
+    ports: 
+      - "80:80"
+    networks: 
+      - warehouse-network
+  
 networks:
   warehouse-network:
     name: warehouse-network
