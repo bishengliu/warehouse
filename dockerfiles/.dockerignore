@@ -1,0 +1,11 @@
+# directories
+.git/
+**/.vs/
+**/bin/
+**/obj/
+**/out/
+
+# files
+Dockerfile*
+**/*.trx
+**/*.md

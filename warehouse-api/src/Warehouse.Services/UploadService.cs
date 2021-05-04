@@ -31,6 +31,8 @@ namespace Warehouse.Services
 
         public IEnumerable<ProductModel> MapProducts(ProductUploadModel productsUpload)
         {
+            if(productsUpload == null || productsUpload.Products == null)
+                throw new UploadInvalidContentException("The upload file contains no valid product!");
             List<ProductModel> products = new List<ProductModel>();
             foreach (var prod in productsUpload.Products)
             {
@@ -55,6 +57,8 @@ namespace Warehouse.Services
 
         public IEnumerable<Article> MapArticles(ArticleUploadModel articlesUpload)
         {
+            if (articlesUpload == null || articlesUpload.Inventory == null)
+                throw new UploadInvalidContentException("The upload file contains no valid article!");
             List<Article> articles = new List<Article>();
             foreach(var art in articlesUpload.Inventory)
             {      
