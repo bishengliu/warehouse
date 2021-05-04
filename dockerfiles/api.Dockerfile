@@ -7,10 +7,10 @@ FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 
 WORKDIR /src
 
-COPY ["../warehouse-api/src/Warehouse.API", "Warehouse.API/"]
-COPY ["../warehouse-api/src/Warehouse.Entities", "Warehouse.Entities/"]
-COPY ["../warehouse-api/src/Warehouse.Services", "Warehouse.Services/"]
-COPY ../warehouse-api/src/WarehouseAPI.sln .
+COPY ["./warehouse-api/src/Warehouse.API", "Warehouse.API/"]
+COPY ["./warehouse-api/src/Warehouse.Entities", "Warehouse.Entities/"]
+COPY ["./warehouse-api/src/Warehouse.Services", "Warehouse.Services/"]
+COPY ./warehouse-api/src/WarehouseAPI.sln .
 
 RUN dotnet restore "Warehouse.API/Warehouse.API.csproj"
 COPY . .

@@ -1,7 +1,7 @@
 # Build container
 FROM node:10 as builder
 
-ARG PROJECT_DIR=../warehouse-ui
+ARG PROJECT_DIR=./warehouse-ui
 
 WORKDIR /app
 
