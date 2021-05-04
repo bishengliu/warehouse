@@ -1,13 +1,14 @@
 # Warehouse application
 
-A simple .Net Core backend application for warehouse. 
-
+A simple application for warehouse. The backend is a .net core RESTful API and frontend is an AngularJS app.
 ## Start application
 
 - install [Docker Compose](https://docs.docker.com/compose/install/);
-- run `docker-compose up -d` in the root of the application folder, where `docker-compose.yml` is located;
-- endpoint **documentation**: [http://localhost:8080](http://localhost:8080/)
-- backend api basic **healthcheck** endpoint: [http://localhost:8080/health](http://localhost:8080/health)
+- run `docker-compose up -d` in the root of the application folder, where `docker-compose.yml` is located; 
+- backend api **documentation**: [http://localhost:8080](http://localhost:8080/);
+- backend api basic **healthcheck** endpoint: [http://localhost:8080/health](http://localhost:8080/health);
+- frontend ui: [http://localhost:80](http://localhost:80/); NB: for demo purpose, the frontend only consumes only few backend endpoints;
+- mssql database: [127.0.0.1,1433](127.0.0.1,1433). demo credentials are in the docker-compose.yml;
 
 ## Project file structure
 
@@ -19,6 +20,7 @@ A simple .Net Core backend application for warehouse.
 | warehouse-api/src/Warehouse.Entities          | entity/database design |
 | warehouse-api/src/Warehouse.Services          | warehouse services |
 | warehouse-api/tests/Warehouse.ServiceTests    | unit tests for warehouse services |
+| warehouse-ui                                  | contains all the source code for frontend angular app |
 | docker-compose.yml                            | bring up api and mssql as docker containers |
 | dockerfiles                                   | dockerfiles, env and db init script |
 | dockerfiles/api.Dockerfile                    | api docker file |
@@ -27,7 +29,7 @@ A simple .Net Core backend application for warehouse.
 | dockerfiles/db                                | mssql init script |
 
 
-## Endpoint brief description
+## Backend endpoint brief description
 | Endpoint | HttpMethod| Description|
 | ------------- | ------------- |:-------------:|
 | /api/Inventory | GET | get all articles|
@@ -45,6 +47,15 @@ A simple .Net Core backend application for warehouse.
 | /api/Products/upload | POST | add products via file (json) upload |
 | /api/Products/stocks | GET | get stock info for all product |
 | /api/Products/stocks/{id} | GET | get a product stock info |
+
+## Frontend brief description
+| Page | Description|
+| ------------- |:-------------:|
+| [http://localhost/inventory](http://localhost/inventory) | list of all inventory articles |
+| [http://localhost/inventory/upload](http://localhost/inventory/upload) | add inventory articles via json file upload |
+| [http://localhost/products](http://localhost/products) | list of all products |
+| [http://localhost/products/stock](http://localhost/products/stock) | list of the stock details for all products |
+| [http://localhost/products/upload](http://localhost/products/upload) | add products via json file upload |
 
 ## Database design
 ![warehouse db](./db_diagram.PNG)
@@ -134,9 +145,9 @@ A simple .Net Core backend application for warehouse.
 the `prod` branch has the version tags.
 
 
-## Discission points
+## Discussion points
 
-####    serverless or monolithic
+#### serverless or monolithic
 - why not choose `serverless`? it is possible (also be open to this option) that the application can be written using aws lambdas or azure functions. The major reasons not to choose the serverless design at this moment are: 1) warehouse is at this moment relatively simple, chosing serverless is bit overkill; 2) simplicity for ops and code base; 
 - why not choose `monolithic`? while warehouse is relatively simple at this moment.The functionalities can grow very fast and the user base can also very large. It is also possible that we could have mutiple client applications (web front end, mobile apps etc);
 
@@ -158,5 +169,7 @@ the application is dockerized and can be deployed as containers using popular cl
 
 - parepare the infra as code if needed.
 
-- logs and performance monitoring
+- logs and performance monitoring;
+
+- more backend and frontend (unit) tests (I would like to take the TDD approach if with enough time).
 
