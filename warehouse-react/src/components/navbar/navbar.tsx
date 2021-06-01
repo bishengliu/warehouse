@@ -5,19 +5,19 @@ import './navbar.css';
 
 const NavBar = () => 
     <Navbar bg="dark" variant="dark" expand="lg">
-        <Navbar.Brand as={Link} to="/" className="brand-padding">Warehouse</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
+        <Navbar.Brand as={Link} to="/" className="brand-padding"><span className="fa fa-home"></span>  Warehouse</Navbar.Brand>
+        <Navbar.Toggle aria-controls="app-navbar-nav" />
+        <Navbar.Collapse id="app-navbar-nav">
             <Nav className="mr-auto">
-                <NavDropdown title="Inventory" id="basic-nav-dropdown">
-                    <NavDropdown.Item as={Link} to="/inventory">All articles</NavDropdown.Item>
-                    <NavDropdown.Item as={Link} to="/inventory">Upload articles</NavDropdown.Item>
+                <NavDropdown title="Inventory" id="app-nav-dropdown">
+                    <NavDropdown.Item as={Link} to="/inventory"><i className="fa fa-list"></i> All articles</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/inventory"><i className="fa fa-upload"></i> Upload articles</NavDropdown.Item>
                 </NavDropdown>
-                <NavDropdown title="Product" id="basic-nav-dropdown">
-                    <NavDropdown.Item as={Link} to="/product">All products</NavDropdown.Item>
-                    <NavDropdown.Item as={Link} to="/product">Upload products</NavDropdown.Item>
+                <NavDropdown title="Product" id="app-nav-dropdown">
+                    <NavDropdown.Item as={Link} to="/product"><i className="fa fa-list"></i> All products</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/product"><i className="fa fa-upload"></i> Upload products</NavDropdown.Item>
                 </NavDropdown>
-                <Nav.Link as={Link} to="/product">Stock</Nav.Link>
+                <Nav.Link as={Link} to="/product"><i className="fa fa-th"></i> Stock</Nav.Link>
             </Nav>
         </Navbar.Collapse>
     </Navbar>
