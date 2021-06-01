@@ -1,10 +1,16 @@
 import React from 'react';
-import Footer from '../components/footer';
+import { BrowserRouter } from 'react-router-dom';
+import { Footer, NavBar } from '../components';
+import RootRoute from '../routes';
 import './app.css';
 
 const App = () => 
 <div className='app'>
-  <Footer />
+  <BrowserRouter>
+    <NavBar />
+    <RootRoute />
+    <Footer />
+  </BrowserRouter> 
 </div>
 
 export default App;
