@@ -1,7 +1,5 @@
 import React from 'react';
 
-const Inventory = () => 
-<div>Inventory page</div>
-
+const Inventory = (): JSX.Element => <div>Inventory page</div>;
 
 export default Inventory;

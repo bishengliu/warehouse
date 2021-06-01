@@ -3,11 +3,12 @@ import { Footer, NavBar } from '../components';
 import RootRoute from '../routes';
 import './app.css';
 
-const App = () => 
-<div className='app'>
+const App = (): JSX.Element => (
+  <div className="app">
     <NavBar />
     <RootRoute />
     <Footer />
-</div>
+  </div>
+);
 
 export default App;
