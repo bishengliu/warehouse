@@ -7,8 +7,10 @@ const RootRoute = (props: any) =>
     <div className='app-content'>
         <Switch>
             <Route path='/' exact><Home /></Route>
+            <Route path='/home' exact><Home /></Route>
             <Route path='/inventory' exact><Inventory /></Route>
             <Route path='/product' exact><Product /></Route>
+            <Route><Home /></Route>
         </Switch>
     </div>
 
