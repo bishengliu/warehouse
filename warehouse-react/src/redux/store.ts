@@ -16,11 +16,14 @@
 import {
   createStore, applyMiddleware, compose, Store, StoreEnhancer, Middleware, AnyAction,
 } from 'redux';
+import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import AppState from './states/app-state';
 import RootReducer from './reducers/root-reducer';
 
-const middlewares: Middleware[] = [];
+const middlewares: Middleware[] = [
+  thunk,
+];
 const middlewareEnhancers: StoreEnhancer<any, any> = applyMiddleware(...middlewares);
 
 const storeEnhancers: any[] = [];

@@ -3,11 +3,12 @@ import { ARTICLE_ACTION_CONSTRANTS as C } from './aricle-action-constants';
 import { SetArticlesAction, SetSingleArticleAction } from './article-actions';
 import Article from '../../types';
 import store from '../store';
+import ArticleService from '../../services/article-service';
 
 const getAllArticlesActionCreatorAsync = () => (dispatch: typeof store.dispatch) => {
-  const articles: Article[] = [new Article('A1', 10, 10, 'description')];
-
-  dispatch(getAllArticlesActionCreator(articles));
+  ArticleService
+    .get()
+    .then((res) => dispatch(getAllArticlesActionCreator(res.data)));
 };
 
 const getAllArticlesActionCreator: ActionCreator<SetArticlesAction> = (articles: Article[]) => (
