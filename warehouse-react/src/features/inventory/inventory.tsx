@@ -9,13 +9,18 @@ const Inventory = (): JSX.Element => {
   const dispatch = useDispatch();
 
   const loadData = () => dispatch(getAllArticlesActionCreatorAsync());
+
   if (!isLoaded) {
     loadData();
-    console.log(articleState.articles);
     setIsLoaded(true);
   }
-
-  return <div>inventory</div>;
+  console.log(articleState.articles);
+  return (
+    <div>
+      inventory:
+      { articleState.articles.length }
+    </div>
+  );
 };
 
 export default Inventory;

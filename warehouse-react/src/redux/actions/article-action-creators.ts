@@ -5,9 +5,9 @@ import Article from '../../types';
 import store from '../store';
 import ArticleService from '../../services/article-service';
 
-const getAllArticlesActionCreatorAsync = () => (dispatch: typeof store.dispatch) => {
+const getAllArticlesActionCreatorAsync = () => (dispatch: typeof store.dispatch) : void => {
   ArticleService
-    .get()
+    .getAllArticles()
     .then((res) => dispatch(getAllArticlesActionCreator(res.data)));
 };
 
@@ -17,6 +17,12 @@ const getAllArticlesActionCreator: ActionCreator<SetArticlesAction> = (articles:
     articles,
   }
 );
+
+const getSingleArticleActionCreatorAsync = (id: number) => (dispatch: typeof store.dispatch): void => {
+  ArticleService
+    .getArticleById(id)
+    .then((res) => dispatch(getSingleSingleArticleActionCreator(res.data)));
+};
 
 const getSingleSingleArticleActionCreator: ActionCreator<SetSingleArticleAction> = (article: Article) => (
   {
@@ -52,6 +58,7 @@ export {
   getAllArticlesActionCreator,
   getAllArticlesActionCreatorAsync,
   getSingleSingleArticleActionCreator,
+  getSingleArticleActionCreatorAsync,
   deleteSingleArticleActionCreator,
   addSingleArticleActionCreator,
   updateSingleArticleActionCreator,

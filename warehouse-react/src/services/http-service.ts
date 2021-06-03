@@ -16,14 +16,14 @@ axiosRetry(client, {
 });
 
 // redirection
-const redirectTo = (document: any, path: string) => {
-  document.location = path;
+const redirectTo = (document: Document, path: string) => {
+  document.location.href = path;
 };
 
 // handle success
 const handleSuccess = (response: AxiosResponse) => {
   console.debug('resquest successful!', response);
-  return response.data;
+  return response;
 };
 
 // handle errors
