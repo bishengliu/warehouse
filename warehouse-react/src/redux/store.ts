@@ -1,28 +1,15 @@
-// import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-
-// export const store = configureStore({
-//   reducer: { },
-// });
-
-// export type AppDispatch = typeof store.dispatch;
-// export type RootState = ReturnType<typeof store.getState>;
-// export type AppThunk<ReturnType = void> = ThunkAction<
-//   ReturnType,
-//   RootState,
-//   unknown,
-//   Action<string>
-// >;
-
 import {
   createStore, applyMiddleware, compose, Store, StoreEnhancer, Middleware, AnyAction,
 } from 'redux';
 import thunk from 'redux-thunk';
+import logger from 'redux-logger';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import AppState from './states/app-state';
 import RootReducer from './reducers/root-reducer';
 
 const middlewares: Middleware[] = [
   thunk,
+  logger,
 ];
 const middlewareEnhancers: StoreEnhancer<any, any> = applyMiddleware(...middlewares);
 
