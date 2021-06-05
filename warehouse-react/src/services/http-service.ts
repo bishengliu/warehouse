@@ -4,7 +4,7 @@ import axios, {
 import axiosRetry from 'axios-retry';
 
 const client: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: process.env.REACT_APP_API_BASE_URL,
 });
 
 axiosRetry(client, {
