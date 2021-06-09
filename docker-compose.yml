@@ -29,11 +29,23 @@ services:
    networks:
      - warehouse-network
   
-  warehouse-ui:
-    container_name: warehouse-ui
+  # warehouse-ui:
+  #   container_name: warehouse-ui
+  #   build:
+  #     context: .
+  #     dockerfile: ./dockerfiles/ui.Dockerfile
+  #   depends_on: 
+  #     - warehouse-api
+  #   ports: 
+  #     - "80:80"
+  #   networks: 
+  #     - warehouse-network
+  
+  warehouse-react:
+    container_name: warehouse-react
     build:
       context: .
-      dockerfile: ./dockerfiles/ui.Dockerfile
+      dockerfile: ./dockerfiles/react.Dockerfile
     depends_on: 
       - warehouse-api
     ports: 
